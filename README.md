@@ -6,7 +6,7 @@
 ## Program Use Prohibited
 This program is shared as a portfolio project and is **not** for operational use. Shortly after completing the project, [CoStar](https://www.costar.com/) released an [updated Terms of Use](https://www.costar.com/about/terms-conditions) for the service to explicitly prohibit the operation of this program. I have ceased operating this program and remain in complete compliance with the CoStar Terms of Use today. I am sharing this program solely as a demonstration of my work and capabilties, and the code should not be used or modified in any way.
 
-## Library/Tool Dependencies
+## Dependencies
 * [Selenium](https://www.selenium.dev/)
 * [SQL Alchemy](https://www.sqlalchemy.org/)
 * [tqdm](https://github.com/tqdm/tqdm)
