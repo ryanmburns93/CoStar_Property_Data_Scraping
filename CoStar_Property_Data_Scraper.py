@@ -760,8 +760,7 @@ def screen_nulls(data_element_val):
     """
     if data_element_val == '-':
         return np.nan
-    else:
-        return data_element_val
+    return data_element_val
 
 
 def parse_responses(cookies_dict):
@@ -905,4 +904,3 @@ def main(print_progress=False):
 
 if __name__ == "__main__":
     main(print_progress=False)
-
