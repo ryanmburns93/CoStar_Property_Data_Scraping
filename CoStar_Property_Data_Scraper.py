@@ -271,8 +271,7 @@ def post_to_db(sql_connection_string, sql_table_name, last_scrape_df=None):
 
     Returns
     -------
-    int
-        A return value indicating the successful completion of the database upload.
+    None.
 
     """
     if last_scrape_df is None:
@@ -558,6 +557,187 @@ def reissue_call_and_read_response_into_df(df, file, cookies_dict):
     return df
 
 
+def set_roomtype_metric_values(unit_type, present_in_columns, prop_details_df):
+    """
+    Pack and return tuple containing metrics for a single type of apartment by number of bedrooms.
+
+    Parameters
+    ----------
+    unit_type : str
+        String description of the apartment type by number of bedrooms.
+    present_in_columns : bool
+        Boolean indicator whether any metrics for the apartment bedroom type are present in prop_details_df.
+    prop_details_df : Pandas DataFrame
+        DataFrame representation of the property metrics table by apartment bedroom type and metric.
+
+    Returns
+    -------
+    unit_type_metrics_package : tuple
+        A tuple containing five average metric values measuring the specified apartment bedroom type.
+
+    """
+    if unit_type == 'Studio':
+        if present_in_columns:
+            StudioAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All Studios'])
+            StudioAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All Studios'])
+            StudioEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All Studios'])
+            NumberOfStudioUnits_val = screen_nulls(prop_details_df.at['unitMixBeds', 'All Studios'])
+            StudioConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All Studios'])
+        else:
+            StudioAskingRentUnit_val = np.nan
+            StudioAvgSF_val = np.nan
+            StudioEffectiveRentUnit_val = np.nan
+            NumberOfStudioUnits_val =  np.nan
+            StudioConcessionsPercentage_val = np.nan
+        unit_type_metrics_package = (StudioAskingRentUnit_val,
+                                     StudioAvgSF_val,
+                                     StudioEffectiveRentUnit_val,
+                                     NumberOfStudioUnits_val,
+                                     StudioConcessionsPercentage_val)
+    elif unit_type == 'One Bed':
+        if present_in_columns:
+            OneBedroomAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All 1 Beds'])
+            OneBedroomAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All 1 Beds'])
+            OneBedroomEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All 1 Beds'])
+            NumberOf1BedroomUnits_val =  screen_nulls(prop_details_df.at['unitMixBeds', 'All 1 Beds'])
+            OneBedroomConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All 1 Beds'])
+        else:
+            OneBedroomAskingRentUnit_val = np.nan
+            OneBedroomAvgSF_val = np.nan
+            OneBedroomEffectiveRentUnit_val = np.nan
+            NumberOf1BedroomUnits_val =  np.nan
+            OneBedroomConcessionsPercentage_val = np.nan
+        unit_type_metrics_package = (OneBedroomAskingRentUnit_val,
+                                     OneBedroomAvgSF_val,
+                                     OneBedroomEffectiveRentUnit_val,
+                                     NumberOf1BedroomUnits_val,
+                                     OneBedroomConcessionsPercentage_val)
+    elif unit_type == 'Two Bed':
+        if present_in_columns:
+            TwoBedroomAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All 2 Beds'])
+            TwoBedroomAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All 2 Beds'])
+            TwoBedroomEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All 2 Beds'])
+            NumberOf2BedroomUnits_val = screen_nulls(prop_details_df.at['unitMixBeds', 'All 2 Beds'])
+            TwoBedroomConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All 2 Beds'])
+        else:
+            TwoBedroomAskingRentUnit_val = np.nan
+            TwoBedroomAvgSF_val = np.nan
+            TwoBedroomEffectiveRentUnit_val = np.nan
+            NumberOf2BedroomUnits_val = np.nan
+            TwoBedroomConcessionsPercentage_val = np.nan
+        unit_type_metrics_package = (TwoBedroomAskingRentUnit_val,
+                                     TwoBedroomAvgSF_val,
+                                     TwoBedroomEffectiveRentUnit_val,
+                                     NumberOf2BedroomUnits_val,
+                                     TwoBedroomConcessionsPercentage_val)
+    elif unit_type == 'Three Bed':
+        if present_in_columns:
+            ThreeBedroomAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All 3 Beds'])
+            ThreeBedroomAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All 3 Beds'])
+            ThreeBedroomEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All 3 Beds'])
+            NumberOf3BedroomUnits_val = screen_nulls(prop_details_df.at['unitMixBeds', 'All 3 Beds'])
+            ThreeBedroomConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All 3 Beds'])
+        else:
+            ThreeBedroomAskingRentUnit_val = np.nan
+            ThreeBedroomAvgSF_val = np.nan
+            ThreeBedroomEffectiveRentUnit_val = np.nan
+            NumberOf3BedroomUnits_val = np.nan
+            ThreeBedroomConcessionsPercentage_val = np.nan
+        unit_type_metrics_package = (ThreeBedroomAskingRentUnit_val,
+                                     ThreeBedroomAvgSF_val,
+                                     ThreeBedroomEffectiveRentUnit_val,
+                                     NumberOf3BedroomUnits_val,
+                                     ThreeBedroomConcessionsPercentage_val)
+    elif unit_type == 'Four Bed':
+        if present_in_columns:
+            FourBedroomAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All 4 Beds'])
+            FourBedroomAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All 4 Beds'])
+            FourBedroomEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All 4 Beds'])
+            NumberOf4BedroomUnits_val = screen_nulls(prop_details_df.at['unitMixBeds', 'All 4 Beds'])
+            FourBedroomConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All 4 Beds'])
+        else:
+            FourBedroomAskingRentUnit_val = np.nan
+            FourBedroomAvgSF_val = np.nan
+            FourBedroomEffectiveRentUnit_val = np.nan
+            NumberOf4BedroomUnits_val =  np.nan
+            FourBedroomConcessionsPercentage_val = np.nan
+        unit_type_metrics_package = (FourBedroomAskingRentUnit_val,
+                                     FourBedroomAvgSF_val,
+                                     FourBedroomEffectiveRentUnit_val,
+                                     NumberOf4BedroomUnits_val,
+                                     FourBedroomConcessionsPercentage_val)
+    return unit_type_metrics_package
+
+
+def assemble_single_property_df(file, json_response, nested_metrics_pack, additional_metrics_dict):
+    """
+    Create a Pandas DataFrame containing all targeted measured collected about a single property from CoStar.
+
+    Parameters
+    ----------
+    file : str
+        Name of the file containing the saved json_response.
+    json_response : JSON object
+        JSON object containing the deserialized values returned by CoStar.
+    nested_metrics_pack : tuple
+        A tuple of tuples containing apartment metrics by number of bedrooms.
+    additional_metrics_dict : dict
+        A dictionary containing all remaining property metric values.
+
+    Returns
+    -------
+    temp_df : Pandas DataFrame.
+        A DataFrame containng all collected metrics regarding a single property.
+
+    """
+    studio_pack, one_pack, two_pack, three_pack, four_pack = nested_metrics_pack
+    temp_df = pd.DataFrame({'CoStarPropertyID': file.split('\\')[1].split('_')[0],
+                            'PropertyName': json_response[6]['data']['propertyDetail']['property_info']['address']['buildingName'],
+                            'PropertyAddress': json_response[6]['data']['propertyDetail']['property_info']['address']['deliveryAddress'],
+                            'OneBedroomAskingRentUnit': one_pack[0],
+                            'TwoBedroomAskingRentUnit': two_pack[0],
+                            'ThreeBedroomAskingRentUnit': three_pack[0],
+                            'FourBedroomAskingRentUnit': four_pack[0],
+                            'StudioAskingRentUnit': studio_pack[0],
+                            'OneBedroomAvgSF': one_pack[1],
+                            'TwoBedroomAvgSF': two_pack[1],
+                            'ThreeBedroomAvgSF': three_pack[1],
+                            'FourBedroomAvgSF': four_pack[1],
+                            'StudioAvgSF': studio_pack[1],
+                            'OneBedroomEffectiveRentUnit': one_pack[2],
+                            'TwoBedroomEffectiveRentUnit': two_pack[2],
+                            'ThreeBedroomEffectiveRentUnit': three_pack[2],
+                            'FourBedroomEffectiveRentUnit': four_pack[2],
+                            'StudioEffectiveRentUnit': studio_pack[2],
+                            'NumberOf1BedroomsUnits': one_pack[3],
+                            'NumberOf2BedroomsUnits': two_pack[3],
+                            'NumberOf3BedroomsUnits': three_pack[3],
+                            'NumberOf4BedroomsUnits': four_pack[3],
+                            'NumberOfStudioUnits': studio_pack[3],
+                            'NumberOfUnits': additional_metrics_dict.get('unit_count'),
+                            'OneBedroomConcessionsPercentage': one_pack[4],
+                            'TwoBedroomConcessionsPercentage': two_pack[4],
+                            'ThreeBedroomConcessionsPercentage': three_pack[4],
+                            'FourBedroomConcessionsPercentage': four_pack[4],
+                            'StudioConcessionsPercentage': studio_pack[4],
+                            'Latitude': json_response[6]['data']['propertyDetail']['property_info']['latitude'],
+                            'Longitude': json_response[6]['data']['propertyDetail']['property_info']['longitude'],
+                            'PropertyManagerName': additional_metrics_dict.get('property_manager'),
+                            'TrueOwnerName': additional_metrics_dict.get('true_owner'),
+                            'BuildingClass': json_response[6]['data']['propertyDetail']['property_info']['bldgClass'],
+                            'StarRating': json_response[6]['data']['propertyDetail']['property_info']['buildingRating'],
+                            'Amenities': additional_metrics_dict.get('amenities'),
+                            'YearBuilt': json_response[6]['data']['propertyDetail']['property_info']['yearBuilt'],
+                            'ParkingSpaces': additional_metrics_dict.get('parking'),
+                            'BuildingStories': json_response[6]['data']['propertyDetail']['property_info']['numOfStories'],
+                            'PercentLeased': additional_metrics_dict.get('percent_leased'),
+                            'City': json_response[6]['data']['propertyDetail']['property_info']['address']['city'],
+                            'State': json_response[6]['data']['propertyDetail']['property_info']['address']['state'],
+                            'Zip': additional_metrics_dict.get('zipcode')},
+                          index=[0])
+    return temp_df
+
+
 def read_call_response_into_df(df, file):
     """
     Open and read call response from .txt file for a single property, pull
@@ -603,71 +783,6 @@ def read_call_response_into_df(df, file):
     except KeyError:
         NumberOfUnits_val = np.nan
 
-    if 'All Studios' in prop_details_df.columns:
-        StudioAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All Studios'])
-        StudioAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All Studios'])
-        StudioEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All Studios'])
-        NumberOfStudioUnits_val = screen_nulls(prop_details_df.at['unitMixBeds', 'All Studios'])
-        StudioConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All Studios'])
-    else:
-        StudioAskingRentUnit_val = np.nan
-        StudioAvgSF_val = np.nan
-        StudioEffectiveRentUnit_val = np.nan
-        NumberOfStudioUnits_val =  np.nan
-        StudioConcessionsPercentage_val = np.nan
-
-    if 'All 1 Beds' in prop_details_df.columns:
-        OneBedroomAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All 1 Beds'])
-        OneBedroomAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All 1 Beds'])
-        OneBedroomEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All 1 Beds'])
-        NumberOf1BedroomUnits_val =  screen_nulls(prop_details_df.at['unitMixBeds', 'All 1 Beds'])
-        OneBedroomConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All 1 Beds'])
-    else:
-        OneBedroomAskingRentUnit_val = np.nan
-        OneBedroomAvgSF_val = np.nan
-        OneBedroomEffectiveRentUnit_val = np.nan
-        NumberOf1BedroomUnits_val =  np.nan
-        OneBedroomConcessionsPercentage_val = np.nan
-
-    if 'All 2 Beds' in prop_details_df.columns:
-        TwoBedroomAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All 2 Beds'])
-        TwoBedroomAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All 2 Beds'])
-        TwoBedroomEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All 2 Beds'])
-        NumberOf2BedroomUnits_val = screen_nulls(prop_details_df.at['unitMixBeds', 'All 2 Beds'])
-        TwoBedroomConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All 2 Beds'])
-    else:
-        TwoBedroomAskingRentUnit_val = np.nan
-        TwoBedroomAvgSF_val = np.nan
-        TwoBedroomEffectiveRentUnit_val = np.nan
-        NumberOf2BedroomUnits_val = np.nan
-        TwoBedroomConcessionsPercentage_val = np.nan
-
-    if 'All 3 Beds' in prop_details_df.columns:
-        ThreeBedroomAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All 3 Beds'])
-        ThreeBedroomAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All 3 Beds'])
-        ThreeBedroomEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All 3 Beds'])
-        NumberOf3BedroomUnits_val = screen_nulls(prop_details_df.at['unitMixBeds', 'All 3 Beds'])
-        ThreeBedroomConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All 3 Beds'])
-    else:
-        ThreeBedroomAskingRentUnit_val = np.nan
-        ThreeBedroomAvgSF_val = np.nan
-        ThreeBedroomEffectiveRentUnit_val = np.nan
-        NumberOf3BedroomUnits_val = np.nan
-        ThreeBedroomConcessionsPercentage_val = np.nan
-
-    if 'All 4 Beds' in prop_details_df.columns:
-        FourBedroomAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All 4 Beds'])
-        FourBedroomAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All 4 Beds'])
-        FourBedroomEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All 4 Beds'])
-        NumberOf4BedroomUnits_val = screen_nulls(prop_details_df.at['unitMixBeds', 'All 4 Beds'])
-        FourBedroomConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All 4 Beds'])
-    else:
-        FourBedroomAskingRentUnit_val = np.nan
-        FourBedroomAvgSF_val = np.nan
-        FourBedroomEffectiveRentUnit_val = np.nan
-        NumberOf4BedroomUnits_val =  np.nan
-        FourBedroomConcessionsPercentage_val = np.nan
-
     try:
         PropertyManagerName_val = json_response[5]['data']['propertyDetail']['propertyContactDetails_info']['propertyManager'][0]['name']
     except (KeyError, IndexError):
@@ -693,51 +808,26 @@ def read_call_response_into_df(df, file):
                                      json_response[0]['data']['propertyDetail']['amenities_Info']['roomAmenities'])
     if amenities_string_val == '':
         amenities_string_val = np.nan
+    additional_metrics_dict = {'amenities': amenities_string_val,
+                               'parking': ParkingSpaces_val,
+                               'zipcode': Zip_val,
+                               'true_owner': TrueOwnerName_val,
+                               'property_manager': PropertyManagerName_val,
+                               'percent_leased': PercentLeased_val,
+                               'unit_count': NumberOfUnits_val}
 
-    temp_df = pd.DataFrame({'CoStarPropertyID': file.split('\\')[1].split('_')[0],
-                            'PropertyName': json_response[6]['data']['propertyDetail']['property_info']['address']['buildingName'],
-                            'PropertyAddress': json_response[6]['data']['propertyDetail']['property_info']['address']['deliveryAddress'],
-                            'OneBedroomAskingRentUnit': OneBedroomAskingRentUnit_val,
-                            'TwoBedroomAskingRentUnit': TwoBedroomAskingRentUnit_val,
-                            'ThreeBedroomAskingRentUnit': ThreeBedroomAskingRentUnit_val,
-                            'FourBedroomAskingRentUnit': FourBedroomAskingRentUnit_val,
-                            'StudioAskingRentUnit': StudioAskingRentUnit_val,
-                            'OneBedroomAvgSF': OneBedroomAvgSF_val,
-                            'TwoBedroomAvgSF': TwoBedroomAvgSF_val,
-                            'ThreeBedroomAvgSF': ThreeBedroomAvgSF_val,
-                            'FourBedroomAvgSF': FourBedroomAvgSF_val,
-                            'StudioAvgSF': StudioAvgSF_val,
-                            'OneBedroomEffectiveRentUnit': OneBedroomEffectiveRentUnit_val,
-                            'TwoBedroomEffectiveRentUnit': TwoBedroomEffectiveRentUnit_val,
-                            'ThreeBedroomEffectiveRentUnit': ThreeBedroomEffectiveRentUnit_val,
-                            'FourBedroomEffectiveRentUnit': FourBedroomEffectiveRentUnit_val,
-                            'StudioEffectiveRentUnit': StudioEffectiveRentUnit_val,
-                            'NumberOf1BedroomsUnits': NumberOf1BedroomUnits_val,
-                            'NumberOf2BedroomsUnits': NumberOf2BedroomUnits_val,
-                            'NumberOf3BedroomsUnits': NumberOf3BedroomUnits_val,
-                            'NumberOf4BedroomsUnits': NumberOf4BedroomUnits_val,
-                            'NumberOfStudioUnits': NumberOfStudioUnits_val,
-                            'NumberOfUnits': NumberOfUnits_val,
-                            'OneBedroomConcessionsPercentage': OneBedroomConcessionsPercentage_val,
-                            'TwoBedroomConcessionsPercentage': TwoBedroomConcessionsPercentage_val,
-                            'ThreeBedroomConcessionsPercentage': ThreeBedroomConcessionsPercentage_val,
-                            'FourBedroomConcessionsPercentage': FourBedroomConcessionsPercentage_val,
-                            'StudioConcessionsPercentage': StudioConcessionsPercentage_val,
-                            'Latitude': json_response[6]['data']['propertyDetail']['property_info']['latitude'],
-                            'Longitude': json_response[6]['data']['propertyDetail']['property_info']['longitude'],
-                            'PropertyManagerName': PropertyManagerName_val,
-                            'TrueOwnerName': TrueOwnerName_val,
-                            'BuildingClass': json_response[6]['data']['propertyDetail']['property_info']['bldgClass'],
-                            'StarRating': json_response[6]['data']['propertyDetail']['property_info']['buildingRating'],
-                            'Amenities': amenities_string_val,
-                            'YearBuilt': json_response[6]['data']['propertyDetail']['property_info']['yearBuilt'],
-                            'ParkingSpaces': ParkingSpaces_val,
-                            'BuildingStories': json_response[6]['data']['propertyDetail']['property_info']['numOfStories'],
-                            'PercentLeased': PercentLeased_val,
-                            'City': json_response[6]['data']['propertyDetail']['property_info']['address']['city'],
-                            'State': json_response[6]['data']['propertyDetail']['property_info']['address']['state'],
-                            'Zip': Zip_val},
-                          index=[0])
+    studio_pack = set_roomtype_metric_values('Studio', ('All Studios' in prop_details_df.columns), prop_details_df)
+    one_bed_pack = set_roomtype_metric_values('One Bed', ('All 1 Beds' in prop_details_df.columns), prop_details_df)
+    two_bed_pack = set_roomtype_metric_values('Two Bed', ('All 2 Beds' in prop_details_df.columns), prop_details_df)
+    three_bed_pack = set_roomtype_metric_values('Three Bed', ('All 3 Beds' in prop_details_df.columns), prop_details_df)
+    four_bed_pack = set_roomtype_metric_values('Four Bed', ('All 4 Beds' in prop_details_df.columns), prop_details_df)
+    nested_metric_packs = (studio_pack,
+                           one_bed_pack,
+                           two_bed_pack,
+                           three_bed_pack,
+                           four_bed_pack)
+
+    temp_df = assemble_single_property_df(file, json_response, nested_metric_packs, additional_metrics_dict)
     df = pd.concat([df, temp_df], axis=0, ignore_index=True)
     return df
 
@@ -871,7 +961,8 @@ def collect_costar_data(username_string, password_string, print_progress=False):
     return cookies_dict
 
 
-def main(print_progress=False):
+def main(print_progress=False, sql_connection_string=None, sql_table_name=None,
+         username_string=None, password_string=None):
     """
     Run full program to send/receive API calls from CoStar, parse the call responses,
     save the responses to a .csv file for backup, and append the latest data from
@@ -893,10 +984,13 @@ def main(print_progress=False):
     start = datetime.datetime.now()
     cookies_dict = collect_costar_data(username_string, password_string, print_progress)
     total_day_df, json_file_list = parse_responses(cookies_dict)
+    if sql_connection_string == None:
+        sql_connection_string = input('Enter the connection string to connect to the SQL Server: ')
+    if sql_table_name == None:
+        sql_table_name = input('Enter the name of the target table on the SQL Server: ')
     post_to_db(sql_connection_string, sql_table_name, total_day_df)
-    if result_indicator == 0:
-        for file in json_file_list:
-            os.remove(file)
+    for file in json_file_list:
+        os.remove(file)
     end = datetime.datetime.now()
     print(f'Full program run completed in {end-start}.')
     return
