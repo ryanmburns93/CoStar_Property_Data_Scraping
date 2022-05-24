@@ -587,7 +587,7 @@ def set_roomtype_metric_values(unit_type, present_in_columns, prop_details_df):
             StudioAskingRentUnit_val = np.nan
             StudioAvgSF_val = np.nan
             StudioEffectiveRentUnit_val = np.nan
-            NumberOfStudioUnits_val =  np.nan
+            NumberOfStudioUnits_val = np.nan
             StudioConcessionsPercentage_val = np.nan
         unit_type_metrics_package = (StudioAskingRentUnit_val,
                                      StudioAvgSF_val,
@@ -599,13 +599,13 @@ def set_roomtype_metric_values(unit_type, present_in_columns, prop_details_df):
             OneBedroomAskingRentUnit_val = screen_nulls(prop_details_df.at['askingRentPerUnit', 'All 1 Beds'])
             OneBedroomAvgSF_val = screen_nulls(prop_details_df.at['averageArea', 'All 1 Beds'])
             OneBedroomEffectiveRentUnit_val = screen_nulls(prop_details_df.at['effectiveRentPerUnit', 'All 1 Beds'])
-            NumberOf1BedroomUnits_val =  screen_nulls(prop_details_df.at['unitMixBeds', 'All 1 Beds'])
+            NumberOf1BedroomUnits_val = screen_nulls(prop_details_df.at['unitMixBeds', 'All 1 Beds'])
             OneBedroomConcessionsPercentage_val = screen_nulls(prop_details_df.at['concessions', 'All 1 Beds'])
         else:
             OneBedroomAskingRentUnit_val = np.nan
             OneBedroomAvgSF_val = np.nan
             OneBedroomEffectiveRentUnit_val = np.nan
-            NumberOf1BedroomUnits_val =  np.nan
+            NumberOf1BedroomUnits_val = np.nan
             OneBedroomConcessionsPercentage_val = np.nan
         unit_type_metrics_package = (OneBedroomAskingRentUnit_val,
                                      OneBedroomAvgSF_val,
@@ -659,7 +659,7 @@ def set_roomtype_metric_values(unit_type, present_in_columns, prop_details_df):
             FourBedroomAskingRentUnit_val = np.nan
             FourBedroomAvgSF_val = np.nan
             FourBedroomEffectiveRentUnit_val = np.nan
-            NumberOf4BedroomUnits_val =  np.nan
+            NumberOf4BedroomUnits_val = np.nan
             FourBedroomConcessionsPercentage_val = np.nan
         unit_type_metrics_package = (FourBedroomAskingRentUnit_val,
                                      FourBedroomAvgSF_val,
