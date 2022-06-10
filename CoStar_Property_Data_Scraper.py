@@ -1,35 +1,12 @@
 # coding: utf-8
 
-# download Python
-# download Chrome Browser
-# library import/install is designed for completely fresh VDI
-import subprocess
-import sys
-
-def install(package):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-try:
-    from selenium import webdriver
-except ModuleNotFoundError:
-    install('selenium')
-    from selenium import webdriver
-try:
-    from webdriver_manager.chrome import ChromeDriverManager
-except ModuleNotFoundError:
-    install('webdriver-manager')
-    from webdriver_manager.chrome import ChromeDriverManager
-
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 import os
 import time
-try:
-    import pandas as pd
-except ModuleNotFoundError:
-    install('pandas')
-    import pandas as pd
+import pandas as pd
 import numpy as np
 from glob import glob
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException
@@ -37,48 +14,26 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-
 import datetime
-try:
-    from sqlalchemy import create_engine, MetaData, update
-    from sqlalchemy.types import BIGINT, INTEGER, VARCHAR, FLOAT, DATETIME
-except ModuleNotFoundError:
-    install('sqlalchemy')
-    from sqlalchemy import create_engine, MetaData, update
-    from sqlalchemy.types import BIGINT, INTEGER, VARCHAR, FLOAT, DATETIME
-try:
-    import pyodbc
-except ModuleNotFoundError:
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pyodbc-4.0.32-cp310-cp310-win_amd64.whl'])
-    import pyodbc  #Needs to be imported to support string connector of sql alchemy engine
+from sqlalchemy import create_engine, MetaData, update
+from sqlalchemy.types import BIGINT, INTEGER, VARCHAR, FLOAT, DATETIME
+import pyodbc  # Needs to be imported to support string connector of sql alchemy engine
 import urllib
-try:
-    from tqdm import tqdm
-except ModuleNotFoundError:
-    install('tqdm')
-    from tqdm import tqdm
-
+from tqdm import tqdm
 import json
 from concurrent.futures import as_completed, ProcessPoolExecutor
-try:
-    from requests_futures.sessions import FuturesSession
-except ModuleNotFoundError:
-    install('requests_futures')
-    from requests_futures.sessions import FuturesSession
+from requests_futures.sessions import FuturesSession
 from requests import Session
+from dotenv import load_dotenv
 
+
+load_dotenv('.env')
 
 def launch_webdriver():
     """
     Instantiate the webdriver application with explicitly defined options.
 
-    Options set webdriver to maximized window at start,
-
-    Parameters
-    ----------
-    webdriver_path : string, optional
-        Alternate filepath to directory containing chromedriver.exe.
-        The default is None.
+    Options set webdriver to maximized window at start.
 
     Returns
     -------
@@ -275,7 +230,7 @@ def post_to_db(sql_connection_string, sql_table_name, last_scrape_df=None):
 
     """
     if last_scrape_df is None:
-        files = glob("C:/Users/RBurns/Documents/*.csv")
+        files = glob(os.path.abspath("*.csv"))
         files.sort(key=os.path.getmtime)
         data_df = pd.read_csv(files[-1])
     else:
@@ -546,7 +501,7 @@ def reissue_call_and_read_response_into_df(df, file, cookies_dict):
     s.headers.update(headers)
     s.hooks['response'].append(print_url)
     s.hooks['response'].append(print_status)
-    url = 'https://product.costar.com/graphql'
+    url = os.getenv('COSTAR_DB_URL')
     prop_id = file.split('\\')[1].split('_')[0]
     payload = get_payload(prop_id)
     resp = s.post(url, data=payload, headers=headers, cookies=cookies_dict)
@@ -873,7 +828,7 @@ def parse_responses(cookies_dict):
     """
 
     start = datetime.datetime.now()
-    json_file_list = glob("C:/Users/RBurns/Documents/*.txt")
+    json_file_list = glob(os.path.abspath("*.txt"))
     df = pd.DataFrame()
     for file in json_file_list:
         try:
@@ -882,7 +837,7 @@ def parse_responses(cookies_dict):
             df = reissue_call_and_read_response_into_df(df, file, cookies_dict)
     end = datetime.datetime.now()
     print(f'Completed parsing into dataframe in {end-start}.')
-    df.to_csv(f'C:/Users/RBurns/Documents/{datetime.datetime.today().strftime("%m.%d.%Y")}_compiled_df.csv', index=False)
+    df.to_csv(os.path.abspath(f'{datetime.datetime.today().strftime("%m.%d.%Y")}_compiled_df.csv'), index=False)
     return df, json_file_list
 
 
@@ -918,7 +873,7 @@ def collect_costar_data(username_string, password_string, print_progress=False):
     s.headers.update(headers)
     s.hooks['response'].append(print_url)
     s.hooks['response'].append(print_status)
-    url = 'https://product.costar.com/graphql'
+    url = os.getenv('COSTAR_DB_URL')
 
     print('Loading property IDs')
     properties_df = load_properties('C:/Users/RBurns/Documents/property_id_matching.csv')
@@ -927,7 +882,10 @@ def collect_costar_data(username_string, password_string, print_progress=False):
     start1 = datetime.datetime.now()
     futures = []
     if print_progress==True:
-        for index, prop_id in tqdm(enumerate(properties_df.CoStarPropID), unit='Request calls'):
+        for index, prop_id in tqdm(enumerate(properties_df.CoStarPropID),
+                                   unit='Request calls',
+                                   leave=True,
+                                   total=len(properties_df.CoStarPropID)):
             payload = get_payload(prop_id)
             future = s.post(url, data=payload, headers=headers, cookies=cookies_dict)
             future.costar_prop_id = prop_id
@@ -961,8 +919,7 @@ def collect_costar_data(username_string, password_string, print_progress=False):
     return cookies_dict
 
 
-def main(print_progress=False, sql_connection_string=None, sql_table_name=None,
-         username_string=None, password_string=None):
+def main(print_progress=False):
     """
     Run full program to send/receive API calls from CoStar, parse the call responses,
     save the responses to a .csv file for backup, and append the latest data from
@@ -982,13 +939,9 @@ def main(print_progress=False, sql_connection_string=None, sql_table_name=None,
 
     """
     start = datetime.datetime.now()
-    cookies_dict = collect_costar_data(username_string, password_string, print_progress)
+    cookies_dict = collect_costar_data(os.getenv('COSTAR_USERNAME'), os.getenv('COSTAR_PASSWORD'), print_progress)
     total_day_df, json_file_list = parse_responses(cookies_dict)
-    if sql_connection_string == None:
-        sql_connection_string = input('Enter the connection string to connect to the SQL Server: ')
-    if sql_table_name == None:
-        sql_table_name = input('Enter the name of the target table on the SQL Server: ')
-    post_to_db(sql_connection_string, sql_table_name, total_day_df)
+    post_to_db(os.getenv('SQL_CONNECTION_STRING'), os.getenv('SQL_TABLE_NAME'), total_day_df)
     for file in json_file_list:
         os.remove(file)
     end = datetime.datetime.now()
